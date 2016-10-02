@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Exemplo Progressbar do Primefaces</title>
+    </h:head>
+    <h:body>
+        <!--formulario principal -->
+        <h:form id="form">
+            <!-- mensagens do exemplo-->
+            <p:messages closable="true"/>
+            <!-- quantidade de notas informado pelo usuario,minimo de 1 e maximo
+            de 1000-->
+            <p:outputLabel value="Quantidade de Notas" 
+                           for="qtd"
+                           rendered="#{exemploBean.notas.size() eq 0}"/>
+            <p:inputText value="#{exemploBean.quantidadeNotas}" 
+                         required="true"                             
+                         rendered="#{exemploBean.notas.size() eq 0}"
+                         id="qtd">
+                <f:validateLongRange minimum="1" 
+                                     maximum="1000"/>
+            </p:inputText>
+            <!-- botao de processar notas-->
+            <p:commandButton value="Processar Notas"
+                             onclick="PF('pb').start();PF('poll').start();" 
+                             onstart="PF('dlg').show()"
+                             oncomplete="PF('dlg').hide();PF('pb').cancel();PF('poll').stop();"
+                             update=":form :prg"
+                             rendered="#{exemploBean.notas.size() eq 0}"
+                             actionListener="#{exemploBean.processarNotas(1)}"
+                             />
+             <!-- botao de processar notas(com erro)-->
+             <p:commandButton value="Processar Notas (com erro)"
+                             onclick="PF('pb').start();PF('poll').start();" 
+                             onstart="PF('dlg').show()"
+                             oncomplete="PF('dlg').hide();PF('pb').cancel();PF('poll').stop();"
+                             update=":form :prg"
+                             rendered="#{exemploBean.notas.size() eq 0}"
+                             actionListener="#{exemploBean.processarNotas(3)}"
+                             />
+            <!--botao de cancelar notas-->
+            <p:commandButton value="Cancelar Notas"
+                             onclick="PF('pb').start();PF('poll').start();" 
+                             onstart="PF('dlg').show()"
+                             oncomplete="PF('dlg').hide();PF('pb').cancel();PF('poll').stop();"
+                             update=":form :prg"
+                             rendered="#{exemploBean.notas.size() gt 0}"
+                             actionListener="#{exemploBean.processarNotas(2)}"
+                             />
+            <!-- lista de notas processadas-->
+            <p:dataTable value="#{exemploBean.notas}"
+                         var="n"
+                         id="lista"
+                         scrollable="true"
+                         scrollHeight="400"
+                         paginator="true"
+                         rows="30"
+                         rendered="#{exemploBean.notas.size() gt 0}">
+                <f:facet name="header">#{exemploBean.quantidadeNotas} Notas Processadas</f:facet>
+                <p:column headerText="Numero">
+                    #{n}
+                </p:column>
+            </p:dataTable>
+        </h:form>
+        <!--janela cotendo  o progressbar e a mensagem de notas processadas-->
+        <p:dialog widgetVar="dlg" 
+                  appendTo="@(body)"
+                  modal="true"
+                  width="400"
+                  height="100"
+                  header="Progresso"
+                  draggable="false"
+                  closable="false"
+                  closeOnEscape="false"
+                  resizable="false"
+                  minimizable="false">
+            <h:form id="prg">
+                <!-- atualizador do componente mensagem-->
+                <p:poll interval="1" 
+                        widgetVar="poll"
+                        autoStart="false"
+                        async="true"
+                        update=":prg:msg" 
+                        immediate="true"/>
+                <h:outputText value="#{exemploBean.mensagem}" id="msg"/>  
+                <br/>
+                  <!-- progressbar-->
+                <p:progressBar widgetVar="pb"
+                               ajax="true"
+                               value="#{exemploBean.progresso}" 
+                               labelTemplate="{value}%"
+                               styleClass="animated" 
+                               global="false">
+                </p:progressBar>
+            </h:form>
+        </p:dialog>
+    </h:body>
+</html>
+

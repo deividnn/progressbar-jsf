@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context allowCasualMultipartParsing="true" 
+         path="/progressbar-jsf" 
+         reloadable="false">
+    <WatchedResource>WEB-INF/web.xml</WatchedResource>
+    <Manager pathname="">
+    </Manager>
+</Context>
